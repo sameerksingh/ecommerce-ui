@@ -1,59 +1,80 @@
 <template>
-    <div class="header">
-      <div class="tabs">
-        <div v-for="tab in tabs" :key="tab.name" @click="goToRoute(tab.route)">
+    <v-app-bar>
+      <v-toolbar-title class="header-title">Hello {{ getUser.email }}!</v-toolbar-title>
+      <v-tabs v-model="activeTab" grow>
+        <v-tab v-for="(tab, index) in tabs" :key="index" :to="tab.route" exact @click="navigate(tab.route)">
           {{ tab.name }}
-        </div>
-      </div>
-      <div class="user" v-if="username">
-        <div class="user-icon" @click="handleLogout">
-          {{ initials }}
-        </div>
-        <button @click="handleLogout">Logout</button>
-      </div>
-    </div>
+        </v-tab>
+      </v-tabs>
+      <v-avatar class="mx-2" color="blue" size="32">{{ initials }}</v-avatar>
+      <v-btn icon @click="triggerLogout">
+        <v-icon>{{ logoutIcon }}</v-icon>
+      </v-btn>
+    </v-app-bar>
   </template>
   
   <script>
+  import { mdiBell, mdiLogout } from '@mdi/js';
+  import { mapActions, mapGetters } from 'vuex';
+
   export default {
-    // eslint-disable-next-line
+    // eslint-disable-next-line 
     name: "Header",
     props: {
-      tabs: Array,
-      username: String,
+      tabs: {
+        type: Array,
+        required: true,
+      },
+    },
+    data() {
+      return {
+        activeTab: null,
+      };
     },
     computed: {
+      ...mapGetters('auth', ['getUser']),
+      bellIcon() {
+        return mdiBell;
+      },
+      logoutIcon() {
+        return mdiLogout;
+      },
       initials() {
-        if (!this.username) return '';
-        const nameParts = this.username.split(' ');
-        return nameParts.map(part => part[0].toUpperCase()).join('');
+        const words = this.getUser.email.split(' ');
+        let initial = '';
+        words.forEach(word => {
+            // Ensure the word is not empty before extracting the initial
+            if (word) {
+                initial += word[0].toUpperCase(); // Append the first letter (capitalized) to the initials
+            }
+        })
+        return initial;
       },
     },
     methods: {
-      goToRoute(route) {
+      ...mapActions('auth', ['logout']),
+      triggerLogout() {
+        this.logout()
+        this.navigate("/login")
+      },
+      navigate(route) {
         // Navigate to the specified route
         if (this.$route.path == route)
             return;
+        console.log('Navigating to:', route);
         this.$router.push(route);
-      },
-      handleLogout() {
-        // Emit the logout event to the parent component
-        this.$emit('logout');
       },
     },
   };
   </script>
   
-  <style scoped>
-  .user-icon {
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: #ccc;
-    text-align: center;
-    line-height: 32px;
-    cursor: pointer;
-  }
-  </style>
-  
+<style>
+.header-title {
+    margin-right: 16px !important;
+    overflow: inherit !important;
+    font-size: large;
+    font-family: "Times New Roman, Times, serif";
+    font-weight: 600;
+
+}
+</style>

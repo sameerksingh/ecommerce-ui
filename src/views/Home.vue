@@ -15,16 +15,10 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="getProducts && getProducts.length">
         <v-col>
           <!-- Clear Cart Button -->
-          <button @click="clearCart(userId)">Clear Cart</button>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <!-- Show Cart Button -->
-          <router-link to="/cart">Show Cart</router-link>
+          <v-btn @click="clearCart(userId)">Clear Cart</v-btn>
         </v-col>
       </v-row>
     </v-container>

@@ -17,10 +17,10 @@ const state = {
   };
   
   const actions = {
-    async getToken({ commit }, { username, password }) {
+    async getToken({ commit }, payload ) {
       try {
         // Make an API call to authenticate and retrieve the token
-        const response = await httpClient.post(`/login?username=${username}&password=${password}`)
+        const response = await httpClient.post(`/login`, payload)
         
         // If authentication is successful, set the token in the state
         const token = response.data.access_token; // Assuming the token is returned from the server response

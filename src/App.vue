@@ -2,13 +2,13 @@
   <v-app>
     <div class="container" :style="computedStyles">
       <Header v-if="showHeader" :tabs="tabs"/>
-      <router-view class="pa-4"></router-view>
+      <router-view class="pa-4 router-class"></router-view>
     </div>
   </v-app>
 </template>
 
 <script>
-import Header from './components/Header2.vue';
+import Header from '@/components/Header.vue';
 
 export default {
   name: 'App',
@@ -20,13 +20,12 @@ export default {
       tabs: [
         { name: 'Products', route: '/' },
         { name: 'Cart', route: '/cart' },
-        // Add more tabs as needed
+        { name: 'Orders', route: '/orders'}
       ],
     };
   },
   computed: {
     computedStyles() {
-      console.log(this.showHeader)
       if(this.showHeader) {
         return {};
       }
@@ -36,6 +35,16 @@ export default {
     },
     showHeader() {
       return this.$route.name != "Login"
+    },
+  },
+  watch: {
+    getUser: {
+        immediate: true, // Trigger the watcher immediately on component mount
+        handler(newUserValue) {
+              if (!newUserValue) {
+                this.$route.push
+              }
+            },
     },
   },
 };
@@ -54,5 +63,9 @@ export default {
     background-position: center;
     overflow: hidden;
     backdrop-filter: blur(10px);
+  }
+  .router-class {
+    overflow-y: auto;
+    max-height: calc(100vh - 64px);
   }
 </style>
