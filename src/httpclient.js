@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const apiBaseUrl = 'http://localhost:5000/api'; // Your backend API base URL
+const apiBaseUrl = `http://${window.location.hostname}:5000/api`; // Your backend API base URL
 
 const httpClient = axios.create({
   baseURL: apiBaseUrl,
